@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="icon" type="image/png" href="imagens/p.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuedesSEC</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.7);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            padding: 32px 24px;
+            min-width: 320px;
+            max-width: 90vw;
+            animation: modalFadeIn 0.3s;
+            position: relative;
+        }
+        @keyframes modalFadeIn {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal-card h2 {
+            margin-bottom: 18px;
+            color: #222;
+            font-size: 1.5em;
+        }
+        .modal-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 24px;
+        }
+        .modal-list li {
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            transition: background 0.2s;
+            border-radius: 8px;
+            padding: 6px 8px;
+            cursor: pointer;
+            color: #1a237e; /* Altere aqui para a cor desejada */
+            font-weight: bold;
+        }
+        .modal-list li:hover {
+            background: #f0f4ff;
+        }
+        .modal-list i {
+            margin-right: 10px;
+            color: #007bff;
+            font-size: 1.2em;
+        }
+        .modal-list a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1em;
+        }
+        .modal-close {
+            position: absolute;
+            top: 12px; right: 16px;
+            background: none;
+            border: none;
+            font-size: 1.4em;
+            color: #888;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .modal-close:hover {
+            color: #007bff;
+        }
+        .category-icon i {
+            font-size: 50px;
+        }
+        .modal-back {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="imagens/p.png.png" alt="Logo GuedesSEC" style="height:300px;">
+                <div class="logo-text">
+                    <div class="logo-name"></div>
+                    <div class="logo-tagline">Personal Repository</div>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li>
+                        <a href="https://discord.gg/MgUc3x6nCC">
+                            <img src="imagens/d.png.avif" alt="Discord" style="height:50px; border-radius:50%;">
+                            Discord
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/GuedesSEC">
+                            <img src="imagens/g.png.png" alt="GitHub" style="height:50px; border-radius:50%;">
+                            GitHub
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.instagram.com/mathew_m8">
+                            <img src="imagens/i.png.png" alt="Instagram" style="height:50px; border-radius:50%;">
+                            Instagram
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://wa.me/5519971026797">
+                            <img src="imagens/w.png.png" alt="WhatsApp" style="height:50px; border-radius:50%;">
+                            WhatsApp
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container main-content">
+        <section class="welcome-section">
+            <h1>Bem-vindo ao Repositório de João Mateus</h1>
+            <p>Este é o seu centro de armazenamento pessoal para ISOs, livros, códigos e links para jogos.</p>
+            <p>Organize e acesse esses recursos de forma segura e eficiente.</p>
+        </section>
+
+        <section class="categories">
+            <div class="category-card">
+                <div class="category-icon">
+                    <img src="imagens/imagens icones/isos.png" alt="ISOs" style="height:50px;">
+                </div>
+                <h3>ISOs OSclick</h3>
+                <p>Baixe e suas imagens ISO de forma segura.</p>
+                <button onclick="openModal('modalIsos')" class="btn">Acessar ISOs</button>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">
+                    <img src="imagens/imagens icones/livros.png" alt="Livros" style="height:50px;">
+                </div>
+                <h3>Livros</h3>
+                <p>Coleção completa de livros de Programação, Ciência, Tecnologia.</p>
+                <button onclick="openModal('modalLivros')" class="btn">Acessar Livros</button>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">
+                    <img src="imagens/imagens icones/jogos.png" alt="Jogos" style="height:50px;">
+                </div>
+                <h3>Jogos em Geral</h3>
+                <p>Repositório de jogos e mods para sua diversão.</p>
+                <button onclick="openModal('modalJogos')" class="btn">Acessar Jogos</button>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">
+                    <img src="imagens/imagens icones/filmes.png" alt="Filmes" style="height:50px;">
+                </div>
+                <h3>Filmes</h3>
+                <p>Links organizados para seus arquivos no Google Drive.</p>
+                <button onclick="openModal('modalFilmes')" class="btn">Acessar Filmes</button>
+            </div>
+        </section>
+
+        <!-- Modal para seleção de ISOs -->
+        <div id="modalIsos" class="modal-overlay">
+            <div class="modal-card">
+                <button class="modal-close" onclick="closeModal('modalIsos')">&times;</button>
+                <h2>Escolha uma categoria de ISOs</h2>
+                <button id="voltarIsos" class="modal-back" onclick="voltarIsos()">Voltar</button>
+                <ul class="modal-list" id="isos-categorias">
+                    <li onclick="showIsos('linux')"><i class="fas fa-folder"></i> Linux</li>
+                    <li onclick="showIsos('windows')"><i class="fas fa-folder"></i> Windows</li>
+                </ul>
+                <ul class="modal-list" id="isos-arquivos" style="display:none;"></ul>
+            </div>
+        </div>
+
+        <!-- Modal para seleção de livros -->
+        <div id="modalLivros" class="modal-overlay">
+            <div class="modal-card">
+                <button class="modal-close" onclick="closeModal('modalLivros')">&times;</button>
+                <h2>Escolha uma categoria de livros</h2>
+                <button id="voltarLivros" class="modal-back" onclick="voltarLivros()">Voltar</button>
+                <ul class="modal-list" id="livros-categorias">
+                    <li onclick="showLivros('programacao')"><i class="fas fa-folder"></i> Programação</li>
+                    <li onclick="showLivros('romance')"><i class="fas fa-folder"></i> Romance</li>
+                    <li onclick="showLivros('tecnologia')"><i class="fas fa-folder"></i> Tecnologia</li>
+                </ul>
+                <ul class="modal-list" id="livros-arquivos" style="display:none;"></ul>
+            </div>
+        </div>
+
+        <!-- Modal para seleção de Jogos -->
+        <div id="modalJogos" class="modal-overlay">
+            <div class="modal-card">
+                <button class="modal-close" onclick="closeModal('modalJogos')">&times;</button>
+                <h2>Escolha uma categoria de jogos</h2>
+                <button id="voltarJogos" class="modal-back" onclick="voltarJogos()">Voltar</button>
+                <ul class="modal-list" id="jogos-categorias">
+                    <li onclick="showJogos('acao')"><i class="fas fa-folder"></i> Ação</li>
+                    <li onclick="showJogos('aventura')"><i class="fas fa-folder"></i> Aventura</li>
+                </ul>
+                <ul class="modal-list" id="jogos-arquivos" style="display:none;"></ul>
+            </div>
+        </div>
+
+        <!-- Modal para seleção de Filmes -->
+        <div id="modalFilmes" class="modal-overlay">
+            <div class="modal-card">
+                <button class="modal-close" onclick="closeModal('modalFilmes')">&times;</button>
+                <h2>Escolha uma categoria de filmes</h2>
+                <button id="voltarFilmes" class="modal-back" onclick="voltarFilmes()">Voltar</button>
+                <ul class="modal-list" id="filmes-categorias">
+                    <li onclick="showFilmes('terror')"><i class="fas fa-folder"></i> Terror</li>
+                    <li onclick="showFilmes('drama')"><i class="fas fa-folder"></i> Drama</li>
+                </ul>
+                <ul class="modal-list" id="filmes-arquivos" style="display:none;"></ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-logo">
+                <div class="footer-text">
+                    <img src="imagens/p.png.png" alt="Logo GuedesSEC" style="height:100px;">
+                    <p>GuedesSEC &copy; 24/08/2025</p>
+                    <p>Dev. João Mateus M. Guedes</p>
+                </div>
+            </div>
+            <div class="quick-links">
+                <ul>
+                    <li><a href="#">Privacidade</a></li>
+                    <li><a href="#">Termos de Uso</a></li>
+                    <li><a href="#">Suporte</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            if(id === 'modalLivros') voltarLivros();
+            if(id === 'modalIsos') voltarIsos();
+            if(id === 'modalJogos') voltarJogos();
+            if(id === 'modalFilmes') voltarFilmes();
+        }
+
+        // Livros por categoria
+        const livros = {
+            programacao: [
+                { nome: "Pensamento e Aprendizado Pragmático", link: "Livros/pensamento-e-aprendizado-pragmatico-andy-hunt-pdf-B07W2V9F1D.pdf" },
+                { nome: "Clean Code", link: "Livros/clean-code.pdf" }
+            ],
+            romance: [
+                { nome: "A Hipótese do Amor", link: "Livros/A-Hipotese-do-Amor-Ali-Hazelwood.pdf" }
+            ],
+            tecnologia: [
+                { nome: "O Homem Mais Rico da Babilônia", link: "Livros/O-Homem-Mais-Rico-da-Babilônia.pdf" }
+            ]
+        };
+        function showLivros(categoria) {
+            document.getElementById('livros-categorias').style.display = 'none';
+            document.getElementById('voltarLivros').style.display = 'inline-block';
+            const lista = document.getElementById('livros-arquivos');
+            lista.innerHTML = '';
+            livros[categoria].forEach(livro => {
+                lista.innerHTML += `<li><i class="fas fa-book"></i> <a href="${livro.link}" target="_blank">${livro.nome}</a></li>`;
+            });
+            lista.style.display = 'block';
+        }
+        function voltarLivros() {
+            document.getElementById('livros-categorias').style.display = 'block';
+            document.getElementById('livros-arquivos').style.display = 'none';
+            document.getElementById('voltarLivros').style.display = 'none';
+        }
+
+        // ISOs por categoria
+        const isos = {
+            linux: [
+                { nome: "Linux MIT 64bits", link: "Isos/Sistemas/linuxMit64bits.iso" }
+            ],
+            windows: [
+                { nome: "Windows 10", link: "Isos/Sistemas/windows10.iso" }
+            ]
+        };
+        function showIsos(categoria) {
+            document.getElementById('isos-categorias').style.display = 'none';
+            document.getElementById('voltarIsos').style.display = 'inline-block';
+            const lista = document.getElementById('isos-arquivos');
+            lista.innerHTML = '';
+            isos[categoria].forEach(iso => {
+                lista.innerHTML += `<li><i class="fas fa-compact-disc"></i> <a href="${iso.link}" target="_blank">${iso.nome}</a></li>`;
+            });
+            lista.style.display = 'block';
+        }
+        function voltarIsos() {
+            document.getElementById('isos-categorias').style.display = 'block';
+            document.getElementById('isos-arquivos').style.display = 'none';
+            document.getElementById('voltarIsos').style.display = 'none';
+        }
+
+        // Jogos por categoria
+        const jogos = {
+            acao: [
+                { nome: "GOD OF WAR 2 DUBLADO", link: "jogos Ps2/GOD OF WAR 2 DUB.iso" }
+            ],
+            aventura: [
+                { nome: "", link: "jogos Ps2/SLPM_663.74.Bombapatch2025.iso" }
+            ]
+        };
+        function showJogos(categoria) {
+            document.getElementById('jogos-categorias').style.display = 'none';
+            document.getElementById('voltarJogos').style.display = 'inline-block';
+            const lista = document.getElementById('jogos-arquivos');
+            lista.innerHTML = '';
+            jogos[categoria].forEach(jogo => {
+                lista.innerHTML += `<li><i class="fas fa-gamepad"></i> <a href="${jogo.link}" target="_blank">${jogo.nome}</a></li>`;
+            });
+            lista.style.display = 'block';
+        }
+        function voltarJogos() {
+            document.getElementById('jogos-categorias').style.display = 'block';
+            document.getElementById('jogos-arquivos').style.display = 'none';
+            document.getElementById('voltarJogos').style.display = 'none';
+        }
+
+        // Filmes por categoria
+        const filmes = {
+            terror: [
+                { nome: "Inatividade Paranormal 1", link: "Filmes/Inatividade Paranormal (www.thePirateFilmes.com).mp4" }
+            ],
+            drama: [
+                { nome: "Oppenheimer", link: "Filmes/Oppenheimer 2023 BluRay 1080p x264 DUAL 5.1.mkv" }
+            ]
+        };
+        function showFilmes(categoria) {
+            document.getElementById('filmes-categorias').style.display = 'none';
+            document.getElementById('voltarFilmes').style.display = 'inline-block';
+            const lista = document.getElementById('filmes-arquivos');
+            lista.innerHTML = '';
+            filmes[categoria].forEach(filme => {
+                lista.innerHTML += `<li><i class="fas fa-film"></i> <a href="${filme.link}" target="_blank">${filme.nome}</a></li>`;
+            });
+            lista.style.display = 'block';
+        }
+        function voltarFilmes() {
+            document.getElementById('filmes-categorias').style.display = 'block';
+            document.getElementById('filmes-arquivos').style.display = 'none';
+            document.getElementById('voltarFilmes').style.display = 'none';
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
