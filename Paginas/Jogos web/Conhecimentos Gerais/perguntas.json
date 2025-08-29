@@ -1,0 +1,27 @@
+[
+  {
+    "question": "Qual é o maior planeta do Sistema Solar?",
+    "options": ["Terra", "Marte", "Júpiter", "Saturno"],
+    "answer": 2
+  },
+  {
+    "question": "Quem escreveu 'Dom Quixote'?",
+    "options": ["Machado de Assis", "Miguel de Cervantes", "Camões", "Victor Hugo"],
+    "answer": 1
+  },
+  {
+    "question": "Em que ano o homem pisou na Lua?",
+    "options": ["1965", "1969", "1972", "1980"],
+    "answer": 1
+  },
+  {
+    "question": "Qual é a capital do Japão?",
+    "options": ["Pequim", "Seul", "Tóquio", "Osaka"],
+    "answer": 2
+  },
+  {
+    "question": "Quanto é 15 x 7?",
+    "options": ["95", "100", "105", "110"],
+    "answer": 2
+  }
+]

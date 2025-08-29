@@ -186,6 +186,32 @@
             </div>
         </section>
 
+        <!-- Card de páginas de jogos centralizado abaixo das categorias -->
+        <div style="width:100%; display:flex; justify-content:center; margin-top:40px;">
+            <div class="category-card" style="display: flex; flex-direction: column; align-items: center;">
+                <div class="category-icon">
+                    <img src="Imagens/imagens icones/jogos 2.png" alt="Entretenimento" style="height:50px;">
+                </div>
+                <h3>Entretenimento</h3>
+                <p>Acesse páginas organizadas de jogos:</p>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                    <a href="Paginas/Jogos web/Mario/index.html" target="_blank" class="btn" style="background:#007bff; color:#fff; font-weight:bold; border-radius:8px; padding:8px 0; text-align:center;">
+                        <i class="fas fa-gamepad" style="margin-right:6px;"></i>
+                        Jogos PS2
+                    </a>
+                    <a href="Paginas/Jogos web/Subway/subway.html" target="_blank" class="btn" style="background:#43a047; color:#fff; font-weight:bold; border-radius:8px; padding:8px 0; text-align:center;">
+                        <i class="fas fa-desktop" style="margin-right:6px;"></i>
+                        Jogos PC
+                    </a>
+                    <a href="paginas-jogos/emuladores.html" target="_blank" class="btn" style="background:#8e24aa; color:#fff; font-weight:bold; border-radius:8px; padding:8px 0; text-align:center;">
+                        <i class="fas fa-rocket" style="margin-right:6px;"></i>
+                        Emuladores
+                    </a>
+                    <!-- Adicione mais páginas conforme necessário -->
+                </div>
+            </div>
+        </div>
+
         <!-- Modal para seleção de ISOs -->
         <div id="modalIsos" class="modal-overlay">
             <div class="modal-card">
@@ -246,20 +272,26 @@
 
     <!-- Footer -->
     <footer>
-        <div class="container footer-content">
-            <div class="footer-logo">
+        <div class="container footer-content" style="display: flex; align-items: center; justify-content: center; gap: 48px;">
+            <!-- Logo à esquerda -->
+            <div class="footer-logo" style="display: flex; align-items: center;">
+                <img src="imagens/p.png.png" alt="Logo GuedesSEC" style="height:100px; margin-right:16px;">
                 <div class="footer-text">
-                    <img src="imagens/p.png.png" alt="Logo GuedesSEC" style="height:100px;">
                     <p>GuedesSEC &copy; 24/08/2025</p>
                     <p>Dev. João Mateus M. Guedes</p>
                 </div>
             </div>
-            <div class="quick-links">
-                <ul>
+            <!-- Links e Loja centralizados -->
+            <div style="display: flex; align-items: center; gap: 32px;">
+                <ul style="display: flex; gap: 24px; list-style: none; padding: 0; margin: 0;">
                     <li><a href="#">Privacidade</a></li>
                     <li><a href="#">Termos de Uso</a></li>
                     <li><a href="#">Suporte</a></li>
                 </ul>
+                <a href="Paginas/Loja da GuedesSEC/INDEX.HTML" class="btn" target="_blank" style="display:inline-block; background:#43a047; color:#fff; font-weight:bold; padding:14px 36px; border-radius:12px; font-size:1.1em; box-shadow:0 4px 16px rgba(0,0,0,0.12); text-decoration:none; margin-left:24px;">
+                    <i class="fas fa-store" style="font-size:1.3em; vertical-align:middle; margin-right:10px;"></i>
+                    Loja GuedesSEC
+                </a>
             </div>
         </div>
     </footer>

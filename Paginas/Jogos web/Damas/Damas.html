@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Show do Milhão</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #001f3f, #0074D9);
+      color: #fff;
+      text-align: center;
+      padding: 30px;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+    #question {
+      font-size: 1.5em;
+      margin: 20px 0;
+    }
+    .option {
+      display: block;
+      background: #111;
+      margin: 10px auto;
+      padding: 15px;
+      width: 50%;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .option:hover {
+      background: #444;
+    }
+    #nextBtn, #restartBtn {
+      display: none;
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #nextBtn { background: green; color: white; }
+    #restartBtn { background: red; color: white; }
+    #score {
+      margin-top: 30px;
+      font-size: 1.3em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Show do Milhão 🎤💰</h1>
+  <div id="game">
+    <div id="question">Carregando pergunta...</div>
+    <div id="options"></div>
+    <button id="nextBtn">Próxima Pergunta</button>
+    <button id="restartBtn">Reiniciar Jogo</button>
+    <div id="score">Pontuação: 0</div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "Qual é o maior planeta do Sistema Solar?",
+        options: ["Terra", "Marte", "Júpiter", "Saturno"],
+        answer: 2
+      },
+      {
+        question: "Quem pintou a Mona Lisa?",
+        options: ["Leonardo da Vinci", "Michelangelo", "Van Gogh", "Pablo Picasso"],
+        answer: 0
+      },
+      {
+        question: "Quanto é 12 x 8?",
+        options: ["96", "82", "108", "86"],
+        answer: 0
+      },
+      {
+        question: "Em que ano o homem pisou na Lua?",
+        options: ["1965", "1969", "1972", "1975"],
+        answer: 1
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("nextBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const scoreEl = document.getElementById("score");
+
+    function loadQuestion() {
+      let q = questions[currentQuestion];
+      questionEl.textContent = q.question;
+      optionsEl.innerHTML = "";
+      q.options.forEach((opt, i) => {
+        let btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.className = "option";
+        btn.onclick = () => checkAnswer(i);
+        optionsEl.appendChild(btn);
+      });
+      nextBtn.style.display = "none";
+    }
+
+    function checkAnswer(selected) {
+      let q = questions[currentQuestion];
+      if (selected === q.answer) {
+        alert("✅ Resposta certa!");
+        score += 1000;
+        scoreEl.textContent = "Pontuação: " + score;
+      } else {
+        alert("❌ Resposta errada! Fim de jogo.");
+        restartBtn.style.display = "block";
+        optionsEl.innerHTML = "";
+        nextBtn.style.display = "none";
+        return;
+      }
+      nextBtn.style.display = "inline-block";
+    }
+
+    nextBtn.addEventListener("click", () => {
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        loadQuestion();
+      } else {
+        alert("🎉 Parabéns! Você completou o Show do Milhão com " + score + " pontos!");
+        restartBtn.style.display = "block";
+        nextBtn.style.display = "none";
+      }
+    });
+
+    restartBtn.addEventListener("click", () => {
+      currentQuestion = 0;
+      score = 0;
+      scoreEl.textContent = "Pontuação: 0";
+      restartBtn.style.display = "none";
+      loadQuestion();
+    });
+
+    loadQuestion();
+  </script>
+</body>
+</html>

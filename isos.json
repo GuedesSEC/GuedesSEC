@@ -1,0 +1,8 @@
+{
+  "windows": [
+    { "nome": "Windows 10", "link": "ISOS/windows10.iso" }
+  ],
+  "linux": [
+    { "nome": "Ubuntu 22.04", "link": "ISOS/ubuntu.iso" }
+  ]
+}

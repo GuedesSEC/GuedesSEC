@@ -1,0 +1,14 @@
+{
+  "programacao": [
+    { "nome": "Pensamento e Aprendizado Pragmático", "link": "Livros/pensamento-e-aprendizado-pragmatico.pdf" },
+    { "nome": "Clean Code", "link": "Livros/clean-code.pdf" },
+    { "nome": "JavaScript: The Good Parts", "link": "Livros/javascript-good-parts.pdf" }
+  ],
+  "romance": [
+    { "nome": "A Hipótese do Amor", "link": "Livros/A-Hipotese-do-Amor.pdf" }
+  ],
+  "tecnologia": [
+    { "nome": "O Homem Mais Rico da Babilônia", "link": "Livros/O-Homem-Mais-Rico-da-Babilônia.pdf" },
+    { "nome": "Inteligência Artificial para Leigos", "link": "Livros/IA-para-leigos.pdf" }
+  ]
+}

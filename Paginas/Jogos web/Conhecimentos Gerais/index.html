@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Show do Milhão</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0a0a23;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    #question {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    #options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 400px;
+      margin: 0 auto 20px;
+    }
+    .option {
+      padding: 10px;
+      background: #222;
+      border: 2px solid #555;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+      transition: 0.3s;
+    }
+    .option:hover {
+      background: #444;
+    }
+    #nextBtn, #restartBtn {
+      margin: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      background: gold;
+      color: black;
+      display: none;
+    }
+    #score {
+      margin-top: 20px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎤 Show do Milhão 🎉</h1>
+  <h2 id="question">Carregando pergunta...</h2>
+  <div id="options"></div>
+  <button id="nextBtn">Próxima</button>
+  <button id="restartBtn">Reiniciar</button>
+  <p id="score">Pontuação: 0</p>
+
+  <script>
+    let questions = [];
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("nextBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const scoreEl = document.getElementById("score");
+
+    async function loadQuestions() {
+      try {
+        let res = await fetch("perguntas.json");
+        questions = await res.json();
+        shuffle(questions);
+        loadQuestion();
+      } catch (e) {
+        questionEl.textContent = "Erro ao carregar perguntas.";
+      }
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function loadQuestion() {
+      let q = questions[currentQuestion];
+      questionEl.textContent = q.question;
+      optionsEl.innerHTML = "";
+      q.options.forEach((opt, i) => {
+        let btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.className = "option";
+        btn.onclick = () => checkAnswer(i);
+        optionsEl.appendChild(btn);
+      });
+      nextBtn.style.display = "none";
+    }
+
+    function checkAnswer(selected) {
+      let q = questions[currentQuestion];
+      if (selected === q.answer) {
+        alert("✅ Resposta certa!");
+        score += 1000;
+        scoreEl.textContent = "Pontuação: " + score;
+      } else {
+        alert("❌ Resposta errada! Fim de jogo.");
+        restartBtn.style.display = "block";
+        optionsEl.innerHTML = "";
+        nextBtn.style.display = "none";
+        return;
+      }
+      nextBtn.style.display = "inline-block";
+    }
+
+    nextBtn.addEventListener("click", () => {
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        loadQuestion();
+      } else {
+        alert("🎉 Parabéns! Você completou o Show do Milhão com " + score + " pontos!");
+        restartBtn.style.display = "block";
+        nextBtn.style.display = "none";
+      }
+    });
+
+    restartBtn.addEventListener("click", () => {
+      currentQuestion = 0;
+      score = 0;
+      scoreEl.textContent = "Pontuação: 0";
+      restartBtn.style.display = "none";
+      shuffle(questions);
+      loadQuestion();
+    });
+
+    loadQuestions();
+  </script>
+</body>
+</html>

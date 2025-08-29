@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuedesSEC - Loja</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #18181b;
+        }
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+        }
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+        }
+        .offer-badge {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-zinc-900 scroll-smooth">
+    <!-- Header -->
+    <header class="bg-zinc-900 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                        <span class="text-zinc-900 font-bold text-xl">GS</span>
+                    </div>
+                    <h1 class="text-2xl font-bold">GuedesSEC</h1>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="hidden md:flex flex-1 max-w-2xl mx-4">
+                    <input type="text" placeholder="O que você está procurando?" 
+                           class="w-full px-4 py-2 rounded-l-lg text-gray-800 focus:outline-none">
+                    <button class="bg-yellow-400 text-gray-800 px-6 py-2 rounded-r-lg hover:bg-yellow-500 transition-colors">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+
+                <!-- User Actions -->
+                <div class="flex items-center space-x-4">
+                    <button class="hidden md:block hover:text-yellow-300 transition-colors">
+                        <i class="fas fa-user text-lg"></i>
+                        <span class="ml-1">Entrar</span>
+                    </button>
+                    <button class="relative hover:text-yellow-300 transition-colors">
+                        <i class="fas fa-shopping-cart text-lg"></i>
+                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Search -->
+            <div class="md:hidden mt-3">
+                <input type="text" placeholder="Buscar produtos..." 
+                       class="w-full px-4 py-2 rounded-lg text-gray-800 focus:outline-none">
+            </div>
+
+            <!-- Navigation -->
+            <nav class="hidden md:flex space-x-6 mt-4">
+                <a href="#computadores" class="hover:text-yellow-300 transition-colors">Computadores</a>
+                <a href="#perifericos" class="hover:text-yellow-300 transition-colors">Periféricos</a>
+                <a href="#componentes" class="hover:text-yellow-300 transition-colors">Componentes</a>
+                <a href="#gamer" class="hover:text-yellow-300 transition-colors">Gamer</a>
+                <a href="#notebooks" class="hover:text-yellow-300 transition-colors">Notebooks</a>
+                <a href="#ofertas" class="hover:text-yellow-300 transition-colors">Ofertas</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Banner -->
+    <section class="bg-gradient-to-r from-zinc-900 to-zinc-800 text-white py-12">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">Black Friday GuedesSEC</h2>
+            <p class="text-xl mb-6">Até 70% OFF em produtos selecionados!</p>
+            <div class="offer-badge bg-red-500 text-white px-6 py-2 rounded-full text-lg font-semibold inline-block mb-6">
+                ⚡ OFERTA RELÂMPAGO ⚡
+            </div>
+            <button class="bg-yellow-400 text-gray-800 px-8 py-3 rounded-lg font-semibold hover:bg-yellow-500 transition-colors">
+                Ver Ofertas
+            </button>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="py-12 bg-zinc-900">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Categorias em Destaque</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <!-- Category Cards -->
+                <a href="#computadores" class="category-card bg-zinc-800 p-4 rounded-lg text-center transition-all cursor-pointer">
+                    <div class="w-16 h-16 mx-auto mb-2 bg-blue-900 rounded-full flex items-center justify-center">
+                        <i class="fas fa-desktop text-blue-400 text-2xl"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-white">Computadores</span>
+                </a>
+
+                <a href="#notebooks" class="category-card bg-zinc-800 p-4 rounded-lg text-center transition-all cursor-pointer">
+                    <div class="w-16 h-16 mx-auto mb-2 bg-green-900 rounded-full flex items-center justify-center">
+                        <i class="fas fa-laptop text-green-400 text-2xl"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-white">Notebooks</span>
+                </a>
+
+                <a href="#gamer" class="category-card bg-zinc-800 p-4 rounded-lg text-center transition-all cursor-pointer">
+                    <div class="w-16 h-16 mx-auto mb-2 bg-red-900 rounded-full flex items-center justify-center">
+                        <i class="fas fa-gamepad text-red-400 text-2xl"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-white">Gamer</span>
+                </a>
+
+                <a href="#perifericos" class="category-card bg-zinc-800 p-4 rounded-lg text-center transition-all cursor-pointer">
+                    <div class="w-16 h-16 mx-auto mb-2 bg-purple-900 rounded-full flex items-center justify-center">
+                        <i class="fas fa-keyboard text-purple-400 text-2xl"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-white">Periféricos</span>
+                </a>
+
+                <a href="#componentes" class="category-card bg-zinc-800 p-4 rounded-lg text-center transition-all cursor-pointer">
+                    <div class="w-16 h-16 mx-auto mb-2 bg-yellow-900 rounded-full flex items-center justify-center">
+                        <i class="fas fa-microchip text-yellow-400 text-2xl"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-white">Componentes</span>
+                </a>
+
+                <a href="#acessorios" class="category-card bg-zinc-800 p-4 rounded-lg text-center transition-all cursor-pointer">
+                    <div class="w-16 h-16 mx-auto mb-2 bg-indigo-900 rounded-full flex items-center justify-center">
+                        <i class="fas fa-headphones text-indigo-400 text-2xl"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-white">Acessórios</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section id="ofertas" class="py-12 bg-zinc-900">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold text-white">Ofertas em Destaque</h2>
+                <a href="#" class="text-blue-400 hover:text-blue-200 font-semibold">Ver todas →</a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Product 1 -->
+                <div class="product-card bg-zinc-800 rounded-lg shadow-md p-4 transition-all">
+                    <div class="relative mb-4">
+                        <img src="https://placehold.co/300x300" alt="Notebook Gamer Dell G15" class="w-full h-48 object-contain rounded">
+                        <span class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">-25%</span>
+                    </div>
+                    <h3 class="font-semibold text-white mb-2">Notebook Gamer Dell G15</h3>
+                    <div class="flex items-center mb-2">
+                        <span class="text-2xl font-bold text-white">R$ 4.299,00</span>
+                        <span class="text-sm text-gray-400 line-through ml-2">R$ 5.699,00</span>
+                    </div>
+                    <div class="flex items-center mb-3">
+                        <div class="flex text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <span class="text-sm text-gray-400 ml-2">(128 avaliações)</span>
+                    </div>
+                    <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        Adicionar ao Carrinho
+                    </button>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product-card bg-zinc-800 rounded-lg shadow-md p-4 transition-all">
+                    <div class="relative mb-4">
+                        <img src="https://placehold.co/300x300" alt="Teclado Mecânico Redragon" class="w-full h-48 object-contain rounded">
+                        <span class="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded">-15%</span>
+                    </div>
+                    <h3 class="font-semibold text-white mb-2">Teclado Mecânico Redragon</h3>
+                    <div class="flex items-center mb-2">
+                        <span class="text-2xl font-bold text-white">R$ 249,90</span>
+                        <span class="text-sm text-gray-400 line-through ml-2">R$ 299,90</span>
+                    </div>
+                    <div class="flex items-center mb-3">
+                        <div class="flex text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <span class="text-sm text-gray-400 ml-2">(89 avaliações)</span>
+                    </div>
+                    <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        Adicionar ao Carrinho
+                    </button>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="product-card bg-zinc-800 rounded-lg shadow-md p-4 transition-all">
+                    <div class="relative mb-4">
+                        <img src="https://placehold.co/300x300" alt="Mouse Gamer Logitech G502" class="w-full h-48 object-contain rounded">
+                        <span class="absolute top-2 left-2 bg-purple-500 text-white text-xs px-2 py-1 rounded">-30%</span>
+                    </div>
+                    <h3 class="font-semibold text-white mb-2">Mouse Gamer Logitech G502</h3>
+                    <div class="flex items-center mb-2">
+                        <span class="text-2xl font-bold text-white">R$ 349,00</span>
+                        <span class="text-sm text-gray-400 line-through ml-2">R$ 499,00</span>
+                    </div>
+                    <div class="flex items-center mb-3">
+                        <div class="flex text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <span class="text-sm text-gray-400 ml-2">(156 avaliações)</span>
+                    </div>
+                    <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        Adicionar ao Carrinho
+                    </button>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="product-card bg-zinc-800 rounded-lg shadow-md p-4 transition-all">
+                    <div class="relative mb-4">
+                        <img src="https://placehold.co/300x300" alt="Monitor LG UltraGear 27" class="w-full h-48 object-contain rounded">
+                        <span class="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded">-20%</span>
+                    </div>
+                    <h3 class="font-semibold text-white mb-2">Monitor LG UltraGear 27"</h3>
+                    <div class="flex items-center mb-2">
+                        <span class="text-2xl font-bold text-white">R$ 1.599,00</span>
+                        <span class="text-sm text-gray-400 line-through ml-2">R$ 1.999,00</span>
+                    </div>
+                    <div class="flex items-center mb-3">
+                        <div class="flex text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <span class="text-sm text-gray-400 ml-2">(203 avaliações)</span>
+                    </div>
+                    <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        Adicionar ao Carrinho
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-12 bg-zinc-800 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4">Fique por dentro das novidades</h2>
+            <p class="text-lg mb-6">Cadastre-se e receba ofertas exclusivas em primeira mão!</p>
+            <div class="max-w-md mx-auto flex">
+                <input type="email" placeholder="Seu melhor email" 
+                       class="flex-1 px-4 py-3 rounded-l-lg text-gray-800 focus:outline-none">
+                <button class="bg-yellow-400 text-gray-800 px-6 py-3 rounded-r-lg font-semibold hover:bg-yellow-500 transition-colors">
+                    Cadastrar
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-zinc-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- About -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">GuedesSEC</h3>
+                    <p class="text-gray-400 mb-4">Sua loja de confiança para produtos de informática e tecnologia.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Categorias</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Computadores</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Notebooks</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Periféricos</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Componentes</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Acessórios</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Suporte</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Central de Ajuda</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Política de Entrega</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Trocas e Devoluções</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Perguntas Frequentes</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Contato</h3>
+                    <div class="space-y-2 text-gray-400">
+                        <p><i class="fas fa-phone mr-2"></i> (11) 4002-8922</p>
+                        <p><i class="fas fa-envelope mr-2"></i> contato@guedessec.com.br</p>
+                        <p><i class="fas fa-map-marker-alt mr-2"></i> Av. Paulista, 1000 - São Paulo</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-400">© 2024 GuedesSEC. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple cart functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const addToCartButtons = document.querySelectorAll('button:contains("Adicionar ao Carrinho")');
+            
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productName = this.parentElement.querySelector('h3').textContent;
+                    const cartCount = document.querySelector('.absolute .bg-red-500');
+                    
+                    // Update cart count
+                    let count = parseInt(cartCount.textContent);
+                    cartCount.textContent = count + 1;
+                    
+                    // Show notification
+                    alert(`"${productName}" adicionado ao carrinho!`);
+                });
+            });
+
+            // Newsletter form
+            const newsletterForm = document.querySelector('input[type="email"]');
+            const newsletterButton = newsletterForm.nextElementSibling;
+            
+            newsletterButton.addEventListener('click', function() {
+                if (newsletterForm.value && newsletterForm.value.includes('@')) {
+                    alert('Email cadastrado com sucesso! Obrigado.');
+                    newsletterForm.value = '';
+                } else {
+                    alert('Por favor, insira um email válido.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

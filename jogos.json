@@ -1,0 +1,9 @@
+{
+  "pc": [
+    { "nome": "Minecraft", "link": "Jogos/minecraft.zip" },
+    { "nome": "CS 1.6", "link": "Jogos/cs16.zip" }
+  ],
+  "android": [
+    { "nome": "Subway Surfers", "link": "Jogos/subway.apk" }
+  ]
+}

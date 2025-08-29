@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jogo de Sinuca – HTML/CSS/JS</title>
+  <style>
+    :root{
+      --table-green:#156a3b;
+      --table-dark:#0d3d24;
+      --ui:#111827;
+      --ui-acc:#10b981;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,sans-serif;background:#0b1020;color:#e5e7eb;}
+    header{position:sticky;top:0;background:rgba(11,16,32,.7);backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid #1f2937}
+    header .wrap{max-width:1100px;margin:auto;padding:12px 16px;display:flex;gap:12px;align-items:center;}
+    header h1{font-size:18px;margin:0;font-weight:700}
+    header .btn{background:#111827;border:1px solid #374151;color:#e5e7eb;padding:8px 12px;border-radius:10px;cursor:pointer}
+    header .btn:hover{border-color:#9ca3af}
+    header .stat{padding:6px 10px;border:1px solid #374151;border-radius:10px;background:#0b1222}
+
+    .stage{max-width:1100px;margin:18px auto;padding:12px}
+    .table-wrap{position:relative;margin:auto;max-width:1000px;border-radius:18px;background:var(--table-dark);padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.45), inset 0 2px 0 rgba(255,255,255,.05)}
+    canvas{display:block;width:100%;height:auto;background:var(--table-green);border-radius:12px;}
+
+    .hint{max-width:1000px;margin:10px auto 0;color:#9ca3af;font-size:14px;padding:0 12px}
+    .pill{display:inline-block;padding:2px 8px;border:1px solid #374151;border-radius:999px;background:#0b1222;margin-right:8px}
+
+    .power{height:10px;background:#1f2937;border-radius:999px;overflow:hidden;border:1px solid #374151}
+    .power > i{display:block;height:100%;width:0;background:linear-gradient(90deg,#22d3ee,#10b981,#84cc16)}
+
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 12px;max-width:1000px;margin:10px auto}
+    @media (max-width:700px){.row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>🎱 Sinuca – HTML/CSS/JS</h1>
+      <button id="btnReset" class="btn">Reiniciar</button>
+      <div class="stat">Tacadas: <b id="shots">0</b></div>
+      <div class="stat">Bolas na mesa: <b id="ballsLeft">0</b></div>
+      <div class="stat">Pontuação: <b id="score">0</b></div>
+    </div>
+  </header>
+
+  <div class="stage">
+    <div class="table-wrap">
+      <canvas id="game" width="1000" height="520"></canvas>
+    </div>
+
+    <div class="row">
+      <div>
+        <div class="pill">Dica</div> Arraste a partir da bola branca para mirar e solte para tacar. Toque na mesa (mobile) para posicionar a força.
+      </div>
+      <div>
+        <div class="pill">Força</div>
+        <div class="power"><i id="powerBar"></i></div>
+      </div>
+    </div>
+
+    <p class="hint">Regras simples: derrube qualquer bola colorida nas caçapas para ganhar +100 pontos. Se derrubar a branca, é falta: -50 pontos e ela volta ao centro.</p>
+  </div>
+
+  <script>
+  // ===== Util =====
+  const TAU = Math.PI * 2;
+  function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+
+  // ===== Config (ajustada) =====
+  const cfg = {
+    width: 1000, height: 520,
+    rail: 22,
+    pocketR: 24,
+    ballR: 10,
+    frictionPS: 0.985,    // atrito por segundo (exponencial)
+    restitution: 0.985,   // quique mesa/bolas
+    cueMaxPower: 16,
+    fixedDt: 1/120,       // timestep fixo: 120 Hz
+    solverIters: 2,       // iterações de colisão por subpasso
+    sleepEps: 0.02        // abaixo disso zera a velocidade
+  };
+
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const shotsEl = document.getElementById('shots');
+  const scoreEl = document.getElementById('score');
+  const ballsLeftEl = document.getElementById('ballsLeft');
+  const powerBar = document.getElementById('powerBar');
+  const btnReset = document.getElementById('btnReset');
+
+  const table = {
+    x: cfg.rail, y: cfg.rail,
+    w: cfg.width - cfg.rail*2,
+    h: cfg.height - cfg.rail*2
+  };
+
+  // Caçapas (6)
+  const pockets = [
+    {x: table.x, y: table.y},
+    {x: table.x + table.w/2, y: table.y - 2},
+    {x: table.x + table.w, y: table.y},
+    {x: table.x, y: table.y + table.h},
+    {x: table.x + table.w/2, y: table.y + table.h + 2},
+    {x: table.x + table.w, y: table.y + table.h},
+  ];
+
+  // ===== Objetos =====
+  class Ball{
+    constructor(x,y,color,id){
+      this.x=x; this.y=y; this.vx=0; this.vy=0; this.color=color; this.id=id;
+      this.inPocket=false; this.scored=false;
+    }
+    get moving(){ return Math.hypot(this.vx,this.vy) > cfg.sleepEps; }
+    integrate(dt){
+      if(this.inPocket) return;
+      this.x += this.vx * dt * 60; // escala leve para “força” ficar parecida com antes
+      this.y += this.vy * dt * 60;
+
+      // atrito exponencial por dt
+      const f = Math.pow(cfg.frictionPS, dt);
+      this.vx *= f; this.vy *= f;
+
+      if(Math.hypot(this.vx,this.vy) < cfg.sleepEps){ this.vx=0; this.vy=0; }
+
+      // colisão com rails
+      const r = cfg.ballR;
+      if(this.x - r < table.x){ this.x = table.x + r; this.vx = -this.vx * cfg.restitution; }
+      if(this.x + r > table.x+table.w){ this.x = table.x+table.w - r; this.vx = -this.vx * cfg.restitution; }
+      if(this.y - r < table.y){ this.y = table.y + r; this.vy = -this.vy * cfg.restitution; }
+      if(this.y + r > table.y+table.h){ this.y = table.y+table.h - r; this.vy = -this.vy * cfg.restitution; }
+
+      // queda em caçapas
+      for(const p of pockets){
+        if(Math.hypot(this.x-p.x, this.y-p.y) < cfg.pocketR){
+          this.inPocket = true; this.vx=this.vy=0;
+        }
+      }
+    }
+    draw(g){
+      if(this.inPocket) return;
+      g.save();
+      // sombra
+      g.fillStyle='rgba(0,0,0,.35)';
+      g.beginPath(); g.ellipse(this.x+2,this.y+4, cfg.ballR*1.05, cfg.ballR*0.6, 0, 0, TAU); g.fill();
+      // bola
+      const grd = g.createRadialGradient(this.x-4,this.y-4,1,this.x,this.y,cfg.ballR);
+      grd.addColorStop(0,'#fff'); grd.addColorStop(0.15,'#eee');
+      grd.addColorStop(0.16,this.color); grd.addColorStop(1,this.color);
+      g.fillStyle=grd;
+      g.beginPath(); g.arc(this.x,this.y,cfg.ballR,0,TAU); g.fill();
+      // brilho
+      g.fillStyle='rgba(255,255,255,.6)';
+      g.beginPath(); g.arc(this.x-3,this.y-3,3,0,TAU); g.fill();
+      g.restore();
+    }
+  }
+
+  // ===== Estado do jogo =====
+  let balls=[], cueBall=null, score=0, shots=0;
+
+  function rack(){
+    balls = [];
+    cueBall = new Ball(table.x + table.w*0.25, table.y + table.h*0.5, '#ffffff', 'cue');
+    balls.push(cueBall);
+
+    // triângulo de 10 bolas coloridas
+    const colors = ['#ff4757','#ffcc00','#2ed573','#1e90ff','#3742fa','#e84393','#ffa502','#70a1ff','#7bed9f','#ff6b81'];
+    let bx = table.x + table.w*0.65; let by = table.y + table.h*0.5;
+    let idx=0; const r = cfg.ballR*2+1.5;
+    for(let row=0; row<4; row++){
+      for(let col=0; col<=row+2; col++){
+        const x = bx + row*r*0.87;
+        const y = by + (col-(row+2)/2)*r;
+        balls.push(new Ball(x,y, colors[idx%colors.length], 'b'+idx));
+        idx++;
+      }
+    }
+  }
+
+  function reset(){
+    rack();
+    score=0; shots=0;
+    shotsEl.textContent=shots; scoreEl.textContent=score;
+    ballsLeftEl.textContent = balls.filter(b=>!b.inPocket && b!==cueBall).length;
+  }
+
+  // ===== Colisão bola-bola (estável) =====
+  function collideBalls(a,b){
+    if(a.inPocket||b.inPocket) return;
+    const dx=b.x-a.x, dy=b.y-a.y;
+    const dist=Math.hypot(dx,dy);
+    const minDist = cfg.ballR*2;
+
+    if(dist === 0) return; // evita divisão por zero
+
+    if(dist < minDist){
+      // 1) Correção posicional (separação) – evita sobreposição/grude
+      const nx = dx/dist, ny = dy/dist;
+      const overlap = (minDist - dist);
+      const percent = 0.8;  // 80% da correção (o resto fica para o próximo passo)
+      const slop = 0.01;    // margem para não oscilar
+      const corr = Math.max(overlap - slop, 0) * percent * 0.5;
+      a.x -= nx * corr; a.y -= ny * corr;
+      b.x += nx * corr; b.y += ny * corr;
+
+      // 2) Resposta de velocidade elástica (massas iguais)
+      const rvx = b.vx - a.vx;
+      const rvy = b.vy - a.vy;
+      const velAlongNormal = rvx*nx + rvy*ny;
+
+      // se estiverem se afastando, não aplica
+      if(velAlongNormal > 0) return;
+
+      const e = cfg.restitution;
+      const j = -(1 + e) * velAlongNormal / 2; // /2 porque massas iguais
+      const impulseX = j * nx;
+      const impulseY = j * ny;
+
+      a.vx -= impulseX;
+      a.vy -= impulseY;
+      b.vx += impulseX;
+      b.vy += impulseY;
+    }
+  }
+
+  // ===== Entrada / Taco =====
+  let aiming=false, aimVec={x:0,y:0};
+
+  function worldPos(evt){
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    return { x:(evt.clientX-rect.left)*scaleX, y:(evt.clientY-rect.top)*scaleY };
+  }
+
+  canvas.addEventListener('pointerdown', e=>{
+    if(cueBall.moving) return;
+    const pos = worldPos(e);
+    const d = Math.hypot(pos.x-cueBall.x, pos.y-cueBall.y);
+    if(d < cfg.ballR*1.8){ aiming=true; aimVec={x:0,y:0}; }
+  });
+
+  canvas.addEventListener('pointermove', e=>{
+    if(!aiming) return;
+    const pos = worldPos(e);
+    aimVec = { x: cueBall.x - pos.x, y: cueBall.y - pos.y };
+  });
+
+  window.addEventListener('pointerup', e=>{
+    if(!aiming) return; aiming=false;
+    const len = Math.hypot(aimVec.x, aimVec.y);
+    const max = 140;
+    const power = clamp(len / max, 0, 1) * cfg.cueMaxPower;
+    if(power>0.2){
+      const nx = aimVec.x/(len||1), ny = aimVec.y/(len||1);
+      cueBall.vx += nx*power; cueBall.vy += ny*power;
+      shots++; shotsEl.textContent=shots;
+    }
+    aimVec={x:0,y:0};
+  });
+
+  // ===== Loop com timestep fixo =====
+  let last = performance.now();
+  let acc = 0;
+
+  function step(dt){
+    // integra posições
+    for(const b of balls) b.integrate(dt);
+
+    // solver de colisões – várias iterações para estabilidade
+    for(let k=0;k<cfg.solverIters;k++){
+      // bola-bola
+      for(let i=0;i<balls.length;i++){
+        for(let j=i+1;j<balls.length;j++){
+          collideBalls(balls[i], balls[j]);
+        }
+      }
+    }
+
+    // pontuação/faltas
+    let scored=false, foul=false;
+    for(const b of balls){
+      if(b.inPocket && !b.scored){
+        b.scored = true;
+        if(b===cueBall){ foul=true; score = Math.max(0, score-50); }
+        else { scored=true; score+=100; }
+      }
+    }
+    if(scored||foul){ scoreEl.textContent=score; }
+    if(foul){
+      setTimeout(()=>{
+        cueBall.inPocket=false; cueBall.scored=false;
+        cueBall.x=table.x+table.w*0.25; cueBall.y=table.y+table.h*0.5;
+        cueBall.vx=cueBall.vy=0;
+      }, 250);
+    }
+    ballsLeftEl.textContent = balls.filter(b=>!b.inPocket && b!==cueBall).length;
+  }
+
+  function update(){
+    const now = performance.now();
+    let frameDt = (now - last) / 1000; // em segundos
+    last = now;
+
+    // evita explosões se a aba ficou travada
+    frameDt = Math.min(frameDt, 0.05);
+
+    acc += frameDt;
+    while(acc >= cfg.fixedDt){
+      step(cfg.fixedDt);
+      acc -= cfg.fixedDt;
+    }
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // rails
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--table-dark');
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    // feltro
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--table-green');
+    ctx.fillRect(table.x, table.y, table.w, table.h);
+
+    // caçapas
+    for(const p of pockets){
+      ctx.fillStyle='rgba(0,0,0,.7)';
+      ctx.beginPath(); ctx.arc(p.x,p.y,cfg.pocketR+3,0,TAU); ctx.fill();
+      ctx.fillStyle='#0a0a0a';
+      ctx.beginPath(); ctx.arc(p.x,p.y,cfg.pocketR,0,TAU); ctx.fill();
+    }
+
+    // mira + barra de força
+    if(aiming){
+      const len = Math.hypot(aimVec.x, aimVec.y);
+      const max = 140; const pct = clamp(len/max,0,1);
+      powerBar.style.width = `${(pct*100).toFixed(0)}%`;
+      ctx.save();
+      ctx.strokeStyle = `rgba(255,255,255,${0.25+0.5*pct})`;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([8,8]);
+      ctx.beginPath();
+      ctx.moveTo(cueBall.x, cueBall.y);
+      ctx.lineTo(cueBall.x + aimVec.x, cueBall.y + aimVec.y);
+      ctx.stroke();
+      ctx.restore();
+    } else {
+      powerBar.style.width = '0%';
+    }
+
+    // bolas
+    for(const b of balls) b.draw(ctx);
+
+    // taco visual
+    if(aiming){
+      const angle = Math.atan2(aimVec.y, aimVec.x);
+      const dist = clamp(Math.hypot(aimVec.x, aimVec.y), 0, 140);
+      const cx = cueBall.x + Math.cos(angle)*(-cfg.ballR-8 - dist*0.1);
+      const cy = cueBall.y + Math.sin(angle)*(-cfg.ballR-8 - dist*0.1);
+      ctx.save();
+      ctx.translate(cx, cy); ctx.rotate(angle);
+      ctx.fillStyle = '#c9a46b';
+      ctx.strokeStyle = '#a8844f';
+      ctx.lineWidth = 3;
+      if(!CanvasRenderingContext2D.prototype.roundRect){
+        ctx.beginPath();
+        ctx.rect(-120, -3, 120, 6);
+      } else {
+        ctx.beginPath();
+        ctx.roundRect(-120, -3, 120, 6, 3);
+      }
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#eee'; ctx.fillRect(-122,-2,4,4);
+      ctx.restore();
+    }
+  }
+
+  function loop(){ update(); draw(); requestAnimationFrame(loop); }
+
+  // Polyfill roundRect
+  if(!CanvasRenderingContext2D.prototype.roundRect){
+    CanvasRenderingContext2D.prototype.roundRect = function(x,y,w,h,r){
+      const rr = Math.min(r, w/2, h/2);
+      this.beginPath();
+      this.moveTo(x+rr,y);
+      this.arcTo(x+w,y,x+w,y+h,rr);
+      this.arcTo(x+w,y+h,x,y+h,rr);
+      this.arcTo(x,y+h,x,y,rr);
+      this.arcTo(x,y,x+w,y,rr);
+      this.closePath();
+      return this;
+    }
+  }
+
+  // ===== Init =====
+  btnReset.addEventListener('click', reset);
+  reset();
+  loop();
+  </script>
+</body>
+</html>
